@@ -1,0 +1,1222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NAZARIO: Online Eye Test</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* General Body and Container Styling */
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #e0f2f7, #c1e4f0); /* Soft gradient background */
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            padding-top: 40px;
+            padding-bottom: 40px;
+            box-sizing: border-box;
+        }
+
+        .container {
+            background-color: #ffffff;
+            border-radius: 20px; /* More rounded corners */
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.18); /* More pronounced shadow */
+            width: 95%;
+            max-width: 900px; /* Slightly wider container */
+            padding: 45px; /* More padding */
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.5s ease-in-out; /* Smooth transitions for container changes */
+        }
+
+        h1 {
+            color: #2c3e50;
+            font-weight: 700;
+            margin-bottom: 15px;
+            font-size: 2.8em; /* Larger heading */
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.05);
+        }
+
+        h2 {
+            color: #4a5a6a;
+            font-weight: 600;
+            margin-bottom: 30px;
+            font-size: 2em; /* Larger sub-heading */
+        }
+
+        p {
+            font-size: 1.15em; /* Slightly larger text */
+            line-height: 1.8;
+            margin-bottom: 30px;
+            color: #555;
+        }
+
+        /* Disclaimer Styling */
+        .disclaimer {
+            background-color: #fff3e0; /* Softer orange */
+            color: #e65100;
+            border: 2px solid #ffb74d; /* Softer border */
+            border-radius: 12px;
+            padding: 22px;
+            margin: 35px auto;
+            font-weight: 600;
+            font-size: 1.05em;
+            line-height: 1.6;
+            text-align: left;
+            box-shadow: 0 4px 15px rgba(255, 152, 0, 0.1);
+        }
+
+        /* Buttons - Enhanced */
+        .primary-button, .nav-button, .game-button {
+            background: linear-gradient(45deg, #6C63FF, #8A7DFF); /* Gradient */
+            color: white;
+            padding: 16px 40px; /* Larger padding */
+            border-radius: 10px; /* More rounded */
+            font-size: 1.2em; /* Larger font */
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 15px rgba(108, 99, 255, 0.4); /* Stronger shadow */
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+            margin: 10px; /* Add margin for consistency */
+        }
+        .primary-button:hover, .nav-button:hover, .game-button:hover {
+            background: linear-gradient(45deg, #5a52d9, #7a6de8);
+            transform: translateY(-4px); /* More pronounced lift */
+            box-shadow: 0 8px 20px rgba(108, 99, 255, 0.5);
+        }
+
+        .nav-button.back {
+            background: linear-gradient(45deg, #b0b0b0, #d0d0d0); /* Grey gradient */
+            color: #444;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            text-shadow: none;
+        }
+        .nav-button.back:hover {
+            background: linear-gradient(45deg, #9a9a9a, #c0c0c0);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+        }
+        .nav-buttons-group {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 50px; /* More space */
+            gap: 20px; /* Gap between buttons */
+        }
+
+        /* Step Content */
+        .test-step {
+            display: none;
+            animation: fadeIn 0.7s ease-in-out; /* Slower, smoother fade */
+        }
+        .test-step.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px); } /* More pronounced slide-in */
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .step-instructions {
+            background-color: #e0f2f7; /* Lighter blue */
+            border-left: 6px solid #4285f4; /* Thicker border */
+            padding: 20px 25px;
+            margin-bottom: 35px;
+            text-align: left;
+            border-radius: 12px;
+            font-size: 1em;
+            color: #1a73e8;
+            box-shadow: 0 2px 10px rgba(66, 133, 244, 0.1);
+        }
+        .step-instructions ul {
+            margin: 0;
+            padding-left: 25px;
+            list-style-type: disc; /* Ensure bullet points */
+        }
+        .step-instructions li {
+            margin-bottom: 8px;
+        }
+
+        /* Test Specific Styles */
+
+        /* Snellen Test */
+        .snellen-chart-container {
+            min-height: 250px; /* Taller container */
+            margin-bottom: 35px;
+        }
+        #snellen-letter {
+            font-family: 'Arial', sans-serif;
+            font-weight: bold;
+            color: #000;
+            margin-bottom: 25px;
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            transition: font-size 0.3s ease; /* Smooth font size change */
+        }
+        .snellen-input-group {
+            display: flex;
+            gap: 12px; /* More space between buttons */
+            justify-content: center;
+            flex-wrap: wrap;
+            max-width: 700px; /* Limit width for better wrapping */
+            margin: 0 auto;
+        }
+        .snellen-input-group button {
+            background-color: #f5f5f5;
+            border: 1px solid #e0e0e0;
+            padding: 12px 18px; /* Larger buttons */
+            border-radius: 8px; /* More rounded */
+            cursor: pointer;
+            font-size: 1.15em;
+            transition: background-color 0.2s, border-color 0.2s, transform 0.1s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .snellen-input-group button:hover {
+            background-color: #ebebeb;
+            border-color: #c0c0c0;
+            transform: translateY(-1px);
+        }
+        .snellen-input-group button.correct {
+            background-color: #e6ffe6; /* Lighter green */
+            border-color: #4CAF50; /* Stronger green */
+            box-shadow: 0 0 0 2px #4CAF50 inset;
+        }
+        .snellen-input-group button.incorrect {
+            background-color: #ffe6e6; /* Lighter red */
+            border-color: #F44336; /* Stronger red */
+            box-shadow: 0 0 0 2px #F44336 inset;
+        }
+
+        /* Astigmatism Test */
+        .astigmatism-chart {
+            width: 280px; /* Larger chart */
+            height: 280px;
+            border-radius: 50%;
+            border: 3px solid black; /* Thicker border */
+            margin: 35px auto;
+            background-color: white;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+        .astigmatism-line {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform-origin: 0% 0%;
+            width: 2px;
+            height: 140px; /* Half of chart width/height */
+            background: black;
+        }
+        .astigmatism-options button {
+            margin: 0 15px; /* More spacing */
+            padding: 12px 25px;
+            font-size: 1.15em;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            background-color: #f5f5f5;
+            cursor: pointer;
+            transition: background-color 0.2s, box-shadow 0.2s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .astigmatism-options button:hover {
+            background-color: #ebebeb;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+
+        /* Amsler Grid Test */
+        .amsler-grid {
+            width: 350px; /* Larger grid */
+            height: 350px;
+            border: 2px solid black; /* Thicker border */
+            margin: 35px auto;
+            background-color: white;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+        .amsler-grid::before {
+            background: repeating-linear-gradient(to bottom, transparent, transparent calc(10% - 1px), black calc(10% - 1px), black 10%),
+                        repeating-linear-gradient(to right, transparent, transparent calc(10% - 1px), black calc(10% - 1px), black 10%);
+            background-size: 100% 100%, 100% 100%;
+        }
+        .amsler-center-dot {
+            width: 10px; /* Larger dot */
+            height: 10px;
+            background-color: red;
+            border-radius: 50%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1;
+        }
+        .amsler-options button {
+            margin: 0 15px;
+            padding: 12px 25px;
+            font-size: 1.15em;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            background-color: #f5f5f5;
+            cursor: pointer;
+            transition: background-color 0.2s, box-shadow 0.2s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .amsler-options button:hover {
+            background-color: #ebebeb;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+
+        /* Color Vision Test */
+        .color-vision-test-container {
+            margin-bottom: 35px;
+        }
+        .color-plate-image {
+            max-width: 350px; /* Larger image */
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            margin: 25px auto;
+        }
+        .color-input-group {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px; /* More space */
+            margin-top: 25px;
+        }
+        .color-input-group input[type="text"] {
+            padding: 12px 18px;
+            font-size: 1.2em;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            width: 150px; /* Wider input */
+            text-align: center;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .color-input-group button {
+            background-color: #007bff;
+            color: white;
+            padding: 12px 25px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2em;
+            transition: background-color 0.2s, transform 0.1s;
+            box-shadow: 0 4px 10px rgba(0,123,255,0.3);
+        }
+        .color-input-group button:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0,123,255,0.4);
+        }
+
+        /* Eye Stress Game */
+        #step-6-eye-stress-game {
+            text-align: center;
+        }
+        .game-controls {
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .game-controls span {
+            font-size: 1.3em;
+            font-weight: 600;
+            color: #34495e;
+        }
+        .game-grid {
+            display: grid;
+            gap: 8px; /* Small gap for tighter grid */
+            margin: 30px auto;
+            max-width: 500px; /* Max width for grid */
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            border-radius: 10px;
+            padding: 10px;
+            background-color: #f8f8f8;
+        }
+        .game-cell {
+            background-color: #e0e0e0;
+            border: 1px solid #ccc;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Arial', sans-serif;
+            font-weight: bold;
+            font-size: 2em; /* Default letter size */
+            cursor: pointer;
+            transition: background-color 0.1s, transform 0.1s;
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            border-radius: 5px;
+            aspect-ratio: 1 / 1; /* Keep cells square */
+        }
+        .game-cell:hover {
+            background-color: #d0d0d0;
+            transform: scale(0.98);
+        }
+        .game-cell.odd-one-out {
+            background-color: #ffe0b2; /* Subtle highlight for the odd one */
+            border-color: #ff9800;
+        }
+        .game-cell.odd-one-out:hover {
+            background-color: #ffd59a;
+        }
+        .game-message {
+            margin-top: 20px;
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #F44336;
+        }
+        .game-message.success {
+            color: #4CAF50;
+        }
+
+        /* Results Summary */
+        #results-summary {
+            text-align: left;
+            margin-top: 35px;
+            padding: 25px;
+            background-color: #f9f9f9;
+            border-radius: 15px;
+            border: 1px solid #eee;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        }
+        #results-summary h3 {
+            color: #28a745;
+            font-size: 1.8em;
+            margin-bottom: 25px;
+            text-shadow: 1px 1px 1px rgba(0,0,0,0.05);
+        }
+        #results-summary ul {
+            list-style: none;
+            padding: 0;
+        }
+        #results-summary ul li {
+            margin-bottom: 12px;
+            font-size: 1.15em;
+            color: #444;
+        }
+        #results-summary ul li strong {
+            color: #007bff;
+        }
+        .results-cta {
+            margin-top: 35px;
+            font-size: 1.15em;
+            font-weight: 600;
+            color: #333;
+            line-height: 1.6;
+        }
+        .results-cta a {
+            color: #6C63FF;
+            text-decoration: none;
+            font-weight: 700;
+            transition: color 0.2s, text-decoration 0.2s;
+        }
+        .results-cta a:hover {
+            color: #5a52d9;
+            text-decoration: underline;
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .container {
+                padding: 25px;
+                width: 98%;
+            }
+            h1 { font-size: 2.2em; }
+            h2 { font-size: 1.6em; }
+            p { font-size: 1em; }
+            .primary-button, .nav-button, .game-button {
+                padding: 12px 25px;
+                font-size: 1em;
+            }
+            .nav-buttons-group {
+                flex-direction: column;
+                gap: 15px;
+            }
+            .snellen-input-group button {
+                padding: 8px 12px;
+                font-size: 1em;
+            }
+            .astigmatism-chart, .amsler-grid {
+                width: 250px;
+                height: 250px;
+            }
+            .color-plate-image {
+                max-width: 280px;
+            }
+            .color-input-group input[type="text"] {
+                width: 100px;
+            }
+            .game-grid {
+                max-width: 300px;
+                gap: 5px;
+            }
+            .game-cell {
+                font-size: 1.5em;
+            }
+        }
+        @media (max-width: 480px) {
+            .container { padding: 15px; }
+            h1 { font-size: 1.8em; }
+            h2 { font-size: 1.3em; }
+            .disclaimer, .step-instructions { font-size: 0.9em; padding: 15px; }
+            .snellen-input-group { flex-direction: column; gap: 8px; }
+            .astigmatism-options button, .amsler-options button {
+                margin: 5px;
+                padding: 8px 15px;
+                font-size: 0.95em;
+            }
+            .game-grid {
+                max-width: 250px;
+            }
+            .game-cell {
+                font-size: 1.2em;
+            }
+            .game-controls span {
+                font-size: 1.1em;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Welcome Screen -->
+        <div id="welcome-screen" class="test-step active">
+            <h1>NAZARIO: Online Eye Test 👁️‍🗨️</h1>
+            <p>Welcome to NAZARIO's quick online eye check. This tool is designed to give you a basic, preliminary understanding of certain aspects of your vision.</p>
+            <div class="disclaimer">
+                <strong>IMPORTANT DISCLAIMER:</strong><br>
+                This online eye test is for general informational and entertainment purposes only and is **NOT a substitute for a comprehensive eye examination by a qualified optometrist or ophthalmologist.** It cannot diagnose, treat, or prevent any eye condition. Always consult an eye care professional for accurate diagnosis, treatment, and precise prescription.
+            </div>
+            <button id="start-test-button" class="primary-button">Start Your Vision Check</button>
+        </div>
+
+        <!-- Step 1: Instructions & Calibration -->
+        <div id="step-1-instructions" class="test-step">
+            <h2>Step 1 of 6: Get Ready!</h2>
+            <p>For the most meaningful (though still approximate) results, please follow these instructions carefully:</p>
+            <div class="step-instructions">
+                <ul>
+                    <li>📏 **Distance:** Sit exactly **10 feet (approx. 3 meters)** away from your screen.</li>
+                    <li>💡 **Lighting:** Ensure your room is well-lit, without glare on your screen.</li>
+                    <li>👁️ **One Eye at a Time:** During the tests, cover one eye completely without pressing on it, then test the other.</li>
+                    <li>🧽 **Clean Screen:** Make sure your screen is clean and free of smudges.</li>
+                    <li>📏 **Screen Calibration:** Adjust the slider below until the line appears to be exactly **3 inches (approx. 7.5 cm)** long on your physical screen.</li>
+                </ul>
+                <div style="margin-top: 20px; background-color: white; padding: 15px; border-radius: 8px; border: 1px solid #ddd;">
+                    <p style="margin-bottom: 10px; font-weight: bold; color: #333;">Adjust this line to 3 inches (7.5 cm):</p>
+                    <div style="width: 100%; height: 5px; background-color: #6C63FF; border-radius: 3px;" id="calibration-line"></div>
+                </div>
+            </div>
+            <div class="nav-buttons-group">
+                <button class="nav-button back" data-nav="back" style="visibility: hidden;">◀️ Back</button>
+                <button class="nav-button next" data-nav="next">Next: Visual Acuity ▶️</button>
+            </div>
+        </div>
+
+        <!-- Step 2: Visual Acuity Test (Snellen-like) -->
+        <div id="step-2-snellen" class="test-step">
+            <h2>Step 2 of 6: Visual Acuity Test</h2>
+            <p>Cover one eye. Read the letter you see. If you can't read it, guess or say "I don't know".</p>
+            <div class="step-instructions">
+                <ul>
+                    <li>Cover your **RIGHT** eye first.</li>
+                    <li>Read the letter aloud or type it below.</li>
+                </ul>
+            </div>
+            <div class="snellen-chart-container">
+                <span id="snellen-letter" style="font-size: 100px;">E</span>
+                <div class="snellen-input-group">
+                    <button data-letter="E">E</button>
+                    <button data-letter="F">F</button>
+                    <button data-letter="P">P</button>
+                    <button data-letter="T">T</button>
+                    <button data-letter="O">O</button>
+                    <button data-letter="Z">Z</button>
+                    <button data-letter="L">L</button>
+                    <button data-letter="D">D</button>
+                    <button data-letter="C">C</button>
+                    <button data-letter="I">I</button>
+                    <button data-letter="N">N</button>
+                    <button data-letter="U">U</button>
+                    <button data-letter="V">V</button>
+                    <button data-letter="R">R</button>
+                    <button data-letter="H">H</button>
+                    <button data-letter="K">K</button>
+                    <button data-letter="S">S</button>
+                    <button data-letter="Y">Y</button>
+                    <button data-letter="X">X</button>
+                    <button data-letter="A">A</button>
+                    <button data-letter="B">B</button>
+                    <button data-letter="G">G</button>
+                    <button data-letter="J">J</button>
+                    <button data-letter="M">M</button>
+                    <button data-letter="Q">Q</button>
+                    <button data-letter="W">W</button>
+                    <button data-letter="I don't know">I don't know</button>
+                </div>
+                <button id="snellen-next-eye-button" class="primary-button" style="margin-top: 20px;">Test Left Eye</button>
+                <button id="snellen-finish-button" class="primary-button" style="margin-top: 20px; display: none;">Finish Visual Acuity</button>
+            </div>
+            <div class="nav-buttons-group">
+                <button class="nav-button back" data-nav="back">◀️ Back</button>
+                <button class="nav-button next" data-nav="next" style="display: none;">Next: Astigmatism ▶️</button>
+            </div>
+        </div>
+
+        <!-- Step 3: Astigmatism Test -->
+        <div id="step-3-astigmatism" class="test-step">
+            <h2>Step 3 of 6: Astigmatism Test</h2>
+            <p>Cover one eye. Look at the center dot. Do any lines appear darker, blurrier, or clearer than others?</p>
+            <div class="step-instructions">
+                <ul>
+                    <li>Cover your **RIGHT** eye.</li>
+                    <li>Stare at the central dot.</li>
+                    <li>Answer the question below.</li>
+                </ul>
+            </div>
+            <div class="astigmatism-chart">
+                <!-- Lines generated by JS for precise rotation -->
+            </div>
+            <div class="astigmatism-options">
+                <button data-answer="yes">Yes, some lines look different</button>
+                <button data-answer="no">No, all lines look the same</button>
+            </div>
+            <button id="astigmatism-next-eye-button" class="primary-button" style="margin-top: 20px;">Test Left Eye</button>
+            <button id="astigmatism-finish-button" class="primary-button" style="margin-top: 20px; display: none;">Finish Astigmatism Test</button>
+            <div class="nav-buttons-group">
+                <button class="nav-button back" data-nav="back">◀️ Back</button>
+                <button class="nav-button next" data-nav="next" style="display: none;">Next: Amsler Grid ▶️</button>
+            </div>
+        </div>
+
+        <!-- Step 4: Amsler Grid Test -->
+        <div id="step-4-amsler" class="test-step">
+            <h2>Step 4 of 6: Amsler Grid Test</h2>
+            <p>Cover one eye. Stare at the central red dot. Do you see any wavy lines, missing squares, or distortions?</p>
+            <div class="step-instructions">
+                <ul>
+                    <li>Cover your **RIGHT** eye.</li>
+                    <li>Stare intently at the central red dot.</li>
+                    <li>Answer the question below.</li>
+                </ul>
+            </div>
+            <div class="amsler-grid">
+                <div class="amsler-center-dot"></div>
+            </div>
+            <div class="amsler-options">
+                <button data-answer="yes">Yes, I see distortions</button>
+                <button data-answer="no">No, all lines and squares are clear</button>
+            </div>
+            <button id="amsler-next-eye-button" class="primary-button" style="margin-top: 20px;">Test Left Eye</button>
+            <button id="amsler-finish-button" class="primary-button" style="margin-top: 20px; display: none;">Finish Amsler Test</button>
+            <div class="nav-buttons-group">
+                <button class="nav-button back" data-nav="back">◀️ Back</button>
+                <button class="nav-button next" data-nav="next" style="display: none;">Next: Color Vision ▶️</button>
+            </div>
+        </div>
+
+        <!-- Step 5: Color Vision Test -->
+        <div id="step-5-color-vision" class="test-step">
+            <h2>Step 5 of 6: Color Vision Test</h2>
+            <p>What number do you see in the image? If you see nothing, type "none".</p>
+            <div class="step-instructions">
+                <ul>
+                    <li>Look at the image carefully.</li>
+                    <li>Type the number you see (e.g., "12", "74") or "none".</li>
+                </ul>
+            </div>
+            <div class="color-vision-test-container">
+                <img src="https://placehold.co/300x300/e0e0e0/555555?text=Ishihara+Plate+1" alt="Ishihara Plate 1" class="color-plate-image" id="color-plate-image">
+                <div class="color-input-group">
+                    <input type="text" id="color-test-answer" placeholder="Enter number or 'none'">
+                    <button id="color-test-submit">Submit</button>
+                </div>
+            </div>
+            <div class="nav-buttons-group">
+                <button class="nav-button back" data-nav="back">◀️ Back</button>
+                <button class="nav-button next" data-nav="next" style="display: none;">Next: Vision Challenge ▶️</button>
+            </div>
+        </div>
+
+        <!-- Step 6: Eye Stress Game -->
+        <div id="step-6-eye-stress-game" class="test-step">
+            <h2>Step 6 of 6: Vision Challenge!</h2>
+            <p>Test your visual discrimination under pressure! Find the letter that is slightly rotated in the grid.</p>
+            <div class="step-instructions">
+                <ul>
+                    <li>Click the letter that looks different from the others.</li>
+                    <li>You have a limited time per round!</li>
+                    <li>Click 'Start Game' to begin.</li>
+                </ul>
+            </div>
+            <div class="game-controls">
+                <button id="game-start-button" class="game-button">Start Game</button>
+                <span>Time: <span id="game-timer">30</span>s</span>
+                <span>Score: <span id="game-score">0</span></span>
+            </div>
+            <div class="game-grid" id="game-grid-container">
+                <!-- Game cells will be generated here -->
+            </div>
+            <p class="game-message" id="game-message"></p>
+            <div class="nav-buttons-group">
+                <button class="nav-button back" data-nav="back">◀️ Back</button>
+                <button class="nav-button next" data-nav="next">View Results ▶️</button>
+            </div>
+        </div>
+
+        <!-- Results Screen -->
+        <div id="results-screen" class="test-step">
+            <h2>Your Vision Check Summary</h2>
+            <p>Thank you for completing the NAZARIO Online Eye Test. Here's a summary of your responses:</p>
+            <div class="disclaimer">
+                <strong>REMINDER:</strong> This summary is based on your self-reported answers and the approximate nature of online tests. It is **NOT a medical diagnosis.**
+            </div>
+            <div id="results-summary">
+                <h3>Your Test Results:</h3>
+                <ul id="summary-list">
+                    <!-- Results will be dynamically inserted here -->
+                </ul>
+                <p class="results-cta">For a precise diagnosis and personalized advice, please **<a href="#">schedule a professional eye examination</a>** with an optometrist or ophthalmologist.</p>
+                <p class="results-cta">Ready to explore frames? **<a href="#">Browse NAZARIO's Collection</a>**</p>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // --- Global Variables ---
+        const testSteps = document.querySelectorAll('.test-step');
+        let currentStepIndex = 0;
+        const userResults = {
+            snellen: { rightEye: [], leftEye: [] },
+            astigmatism: { rightEye: null, leftEye: null },
+            amsler: { rightEye: null, leftEye: null },
+            colorVision: null,
+            eyeStressGameScore: 0
+        };
+
+        // Snellen Test Variables
+        const snellenLetters = ['E', 'F', 'P', 'T', 'O', 'Z', 'L', 'D', 'C', 'I', 'N', 'U', 'V', 'R', 'H', 'K', 'S', 'Y', 'X', 'A', 'B', 'G', 'J', 'M', 'Q', 'W'];
+        let currentSnellenLetterIndex = 0;
+        let currentSnellenEye = 'rightEye'; // 'rightEye' or 'leftEye'
+        const snellenFontSizes = ['100px', '80px', '60px', '50px', '40px', '30px', '25px', '20px', '18px', '16px', '14px', '12px', '10px'];
+        let snellenAttempts = 0;
+
+        // Color Vision Test Variables
+        const colorPlates = [
+            { img: 'https://placehold.co/300x300/e0e0e0/555555?text=Plate+1', answer: '12' },
+            { img: 'https://placehold.co/300x300/e0e0e0/555555?text=Plate+2', answer: '8' },
+            { img: 'https://placehold.co/300x300/e0e0e0/555555?text=Plate+3', answer: '6' },
+            { img: 'https://placehold.co/300x300/e0e0e0/555555?text=Plate+4', answer: '29' },
+            { img: 'https://placehold.co/300x300/e0e0e0/555555?text=Plate+5', answer: '74' },
+            { img: 'https://placehold.co/300x300/e0e0e0/555555?text=Plate+6', answer: 'none' }
+        ];
+        let currentColorPlateIndex = 0;
+        let colorTestScore = 0;
+
+        // Eye Stress Game Variables
+        const gameLetters = ['E', 'F', 'H', 'L', 'T', 'Z']; // Letters good for rotation
+        let gameScore = 0;
+        let gameTime = 30;
+        let gameTimerInterval;
+        let gameLevel = 1;
+        const gameGridSizes = [3, 4, 5, 6]; // 3x3, 4x4, 5x5, 6x6
+        const gameRotationAngles = [90, 45, 25, 10]; // Degrees of rotation for odd one out
+        const gameTimePerRound = [30, 25, 20, 15]; // Time in seconds for each level
+
+        // --- DOM Elements ---
+        const startTestButton = document.getElementById('start-test-button');
+        const snellenLetterSpan = document.getElementById('snellen-letter');
+        const snellenInputButtons = document.querySelectorAll('.snellen-input-group button');
+        const snellenNextEyeButton = document.getElementById('snellen-next-eye-button');
+        const snellenFinishButton = document.getElementById('snellen-finish-button');
+        const astigmatismChart = document.querySelector('.astigmatism-chart');
+        const astigmatismOptions = document.querySelector('.astigmatism-options');
+        const astigmatismNextEyeButton = document.getElementById('astigmatism-next-eye-button');
+        const astigmatismFinishButton = document.getElementById('astigmatism-finish-button');
+        const amslerOptions = document.querySelector('.amsler-options');
+        const amslerNextEyeButton = document.getElementById('amsler-next-eye-button');
+        const amslerFinishButton = document.getElementById('amsler-finish-button');
+        const colorPlateImage = document.getElementById('color-plate-image');
+        const colorTestAnswerInput = document.getElementById('color-test-answer');
+        const colorTestSubmitButton = document.getElementById('color-test-submit');
+        const summaryList = document.getElementById('summary-list');
+
+        // Game DOM Elements
+        const gameStartButton = document.getElementById('game-start-button');
+        const gameTimerDisplay = document.getElementById('game-timer');
+        const gameScoreDisplay = document.getElementById('game-score');
+        const gameGridContainer = document.getElementById('game-grid-container');
+        const gameMessageDisplay = document.getElementById('game-message');
+
+        // --- Event Listeners ---
+
+        startTestButton.addEventListener('click', () => {
+            hideStep(0); // Hide welcome screen
+            showStep(1); // Show instructions
+        });
+
+        // Navigation buttons (Back/Next)
+        document.querySelectorAll('.nav-button').forEach(button => {
+            button.addEventListener('click', (event) => {
+                const navType = event.target.dataset.nav;
+                if (navType === 'next') {
+                    // Specific validation for current step before moving next
+                    if (!validateCurrentStep()) {
+                        alert('Please complete the current test before proceeding.');
+                        return;
+                    }
+                    hideStep(currentStepIndex);
+                    showStep(currentStepIndex + 1);
+                } else if (navType === 'back') {
+                    hideStep(currentStepIndex);
+                    showStep(currentStepIndex - 1);
+                }
+            });
+        });
+
+        // Snellen Test Logic
+        snellenInputButtons.forEach(button => {
+            button.addEventListener('click', (event) => {
+                const selectedLetter = event.target.dataset.letter;
+                processSnellenAnswer(selectedLetter);
+            });
+        });
+
+        snellenNextEyeButton.addEventListener('click', () => {
+            userResults.snellen.rightEye = [...userResults.snellen.rightEye];
+            resetSnellenTest();
+            currentSnellenEye = 'leftEye';
+            snellenNextEyeButton.style.display = 'none';
+            snellenFinishButton.style.display = 'inline-block';
+            alert('Now cover your LEFT eye and test your RIGHT eye.');
+            updateSnellenInstructions('LEFT', 'RIGHT');
+        });
+
+        snellenFinishButton.addEventListener('click', () => {
+            userResults.snellen.leftEye = [...userResults.snellen.leftEye];
+            document.querySelector('#step-2-snellen .nav-button.next').style.display = 'inline-block';
+            alert('Visual Acuity test completed!');
+        });
+
+        // Astigmatism Test Logic
+        astigmatismOptions.addEventListener('click', (event) => {
+            const answer = event.target.dataset.answer;
+            if (answer) {
+                if (currentSnellenEye === 'rightEye') {
+                    userResults.astigmatism.rightEye = answer;
+                    astigmatismNextEyeButton.style.display = 'inline-block';
+                    alert('Right eye answer recorded. Now test your left eye.');
+                    updateAstigmatismInstructions('LEFT', 'RIGHT');
+                } else {
+                    userResults.astigmatism.leftEye = answer;
+                    astigmatismFinishButton.style.display = 'inline-block';
+                    document.querySelector('#step-3-astigmatism .nav-button.next').style.display = 'inline-block';
+                    alert('Astigmatism test completed!');
+                }
+            }
+        });
+        astigmatismNextEyeButton.addEventListener('click', () => {
+            currentSnellenEye = 'leftEye';
+            astigmatismNextEyeButton.style.display = 'none';
+            astigmatismFinishButton.style.display = 'inline-block';
+            document.querySelectorAll('.astigmatism-options button').forEach(btn => btn.classList.remove('selected'));
+        });
+
+        // Amsler Grid Test Logic
+        amslerOptions.addEventListener('click', (event) => {
+            const answer = event.target.dataset.answer;
+            if (answer) {
+                if (currentSnellenEye === 'rightEye') {
+                    userResults.amsler.rightEye = answer;
+                    amslerNextEyeButton.style.display = 'inline-block';
+                    alert('Right eye answer recorded. Now test your left eye.');
+                    updateAmslerInstructions('LEFT', 'RIGHT');
+                } else {
+                    userResults.amsler.leftEye = answer;
+                    amslerFinishButton.style.display = 'inline-block';
+                    document.querySelector('#step-4-amsler .nav-button.next').style.display = 'inline-block';
+                    alert('Amsler Grid test completed!');
+                }
+            }
+        });
+        amslerNextEyeButton.addEventListener('click', () => {
+            currentSnellenEye = 'leftEye';
+            amslerNextEyeButton.style.display = 'none';
+            amslerFinishButton.style.display = 'inline-block';
+            document.querySelectorAll('.amsler-options button').forEach(btn => btn.classList.remove('selected'));
+        });
+
+        // Color Vision Test Logic
+        colorTestSubmitButton.addEventListener('click', () => {
+            const userAnswer = colorTestAnswerInput.value.trim().toLowerCase();
+            const correctAnswer = colorPlates[currentColorPlateIndex].answer.toLowerCase();
+
+            if (userAnswer === correctAnswer) {
+                colorTestScore++;
+                alert('Correct!');
+            } else {
+                alert(`Incorrect. The answer was "${correctAnswer}".`);
+            }
+
+            currentColorPlateIndex++;
+            if (currentColorPlateIndex < colorPlates.length) {
+                colorPlateImage.src = colorPlates[currentColorPlateIndex].img;
+                colorTestAnswerInput.value = '';
+            } else {
+                userResults.colorVision = `${colorTestScore} out of ${colorPlates.length} correct`;
+                alert('Color Vision test completed!');
+                document.querySelector('#step-5-color-vision .nav-button.next').style.display = 'inline-block';
+                colorTestSubmitButton.disabled = true;
+                colorTestAnswerInput.disabled = true;
+            }
+        });
+
+        // Eye Stress Game Logic
+        gameStartButton.addEventListener('click', startGame);
+        gameGridContainer.addEventListener('click', (event) => {
+            if (event.target.classList.contains('game-cell') && event.target.dataset.odd === 'true') {
+                gameScore++;
+                gameScoreDisplay.textContent = gameScore;
+                gameMessageDisplay.textContent = 'Correct! Next round...';
+                gameMessageDisplay.classList.remove('error');
+                gameMessageDisplay.classList.add('success');
+                setTimeout(() => {
+                    gameMessageDisplay.textContent = '';
+                    nextGameRound();
+                }, 500);
+            } else if (event.target.classList.contains('game-cell')) {
+                gameMessageDisplay.textContent = 'Wrong! Try again.';
+                gameMessageDisplay.classList.remove('success');
+                gameMessageDisplay.classList.add('error');
+            }
+        });
+
+        // --- Functions ---
+
+        function showStep(index) {
+            if (index >= 0 && index < testSteps.length) {
+                testSteps[currentStepIndex].classList.remove('active');
+                currentStepIndex = index;
+                testSteps[currentStepIndex].classList.add('active');
+                updateNavigationButtons();
+
+                // Specific initialization for each step
+                if (testSteps[currentStepIndex].id === 'step-2-snellen') {
+                    resetSnellenTest();
+                    currentSnellenEye = 'rightEye';
+                    snellenNextEyeButton.style.display = 'inline-block';
+                    snellenFinishButton.style.display = 'none';
+                    document.querySelector('#step-2-snellen .nav-button.next').style.display = 'none';
+                    updateSnellenInstructions('RIGHT', 'LEFT');
+                } else if (testSteps[currentStepIndex].id === 'step-3-astigmatism') {
+                    drawAstigmatismChart();
+                    currentSnellenEye = 'rightEye';
+                    astigmatismNextEyeButton.style.display = 'inline-block';
+                    astigmatismFinishButton.style.display = 'none';
+                    document.querySelector('#step-3-astigmatism .nav-button.next').style.display = 'none';
+                    updateAstigmatismInstructions('RIGHT', 'LEFT');
+                } else if (testSteps[currentStepIndex].id === 'step-4-amsler') {
+                    currentSnellenEye = 'rightEye';
+                    amslerNextEyeButton.style.display = 'inline-block';
+                    amslerFinishButton.style.display = 'none';
+                    document.querySelector('#step-4-amsler .nav-button.next').style.display = 'none';
+                    updateAmslerInstructions('RIGHT', 'LEFT');
+                } else if (testSteps[currentStepIndex].id === 'step-5-color-vision') {
+                    currentColorPlateIndex = 0;
+                    colorTestScore = 0;
+                    colorPlateImage.src = colorPlates[currentColorPlateIndex].img;
+                    colorTestAnswerInput.value = '';
+                    colorTestSubmitButton.disabled = false;
+                    colorTestAnswerInput.disabled = false;
+                    document.querySelector('#step-5-color-vision .nav-button.next').style.display = 'none';
+                } else if (testSteps[currentStepIndex].id === 'step-6-eye-stress-game') {
+                    resetGame();
+                    // Game is optional, so next button is always visible here
+                    document.querySelector('#step-6-eye-stress-game .nav-button.next').style.display = 'inline-block';
+                } else if (testSteps[currentStepIndex].id === 'results-screen') {
+                    generateResultsSummary();
+                }
+            }
+        }
+
+        function hideStep(index) {
+            testSteps[index].classList.remove('active');
+        }
+
+        function updateNavigationButtons() {
+            const currentStepElement = testSteps[currentStepIndex];
+            const backButton = currentStepElement.querySelector('.nav-button.back');
+            const nextButton = currentStepElement.querySelector('.nav-button.next');
+
+            if (backButton) {
+                backButton.style.visibility = (currentStepIndex === 0) ? 'hidden' : 'visible';
+                if (currentStepIndex === 1) {
+                    backButton.style.visibility = 'visible';
+                }
+            }
+            if (nextButton) {
+                if (currentStepIndex === 0 || currentStepIndex === 1 || currentStepIndex === 5) { // Welcome, Instructions, Game (optional)
+                    nextButton.style.display = 'inline-block';
+                } else if (currentStepIndex === testSteps.length - 1) {
+                    nextButton.style.display = 'none';
+                } else {
+                    nextButton.style.display = 'none';
+                }
+            }
+        }
+
+        function validateCurrentStep() {
+            const currentStepId = testSteps[currentStepIndex].id;
+            switch (currentStepId) {
+                case 'welcome-screen':
+                case 'step-1-instructions':
+                case 'step-6-eye-stress-game': // Game is optional, so always valid to proceed
+                    return true;
+                case 'step-2-snellen':
+                    return userResults.snellen.rightEye.length > 0 && userResults.snellen.leftEye.length > 0;
+                case 'step-3-astigmatism':
+                    return userResults.astigmatism.rightEye !== null && userResults.astigmatism.leftEye !== null;
+                case 'step-4-amsler':
+                    return userResults.amsler.rightEye !== null && userResults.amsler.leftEye !== null;
+                case 'step-5-color-vision':
+                    return userResults.colorVision !== null;
+                default:
+                    return true;
+            }
+        }
+
+        // --- Snellen Test Helper Functions ---
+        function resetSnellenTest() {
+            currentSnellenLetterIndex = 0;
+            snellenAttempts = 0;
+            snellenLetterSpan.textContent = getRandomSnellenLetter();
+            snellenLetterSpan.style.fontSize = snellenFontSizes[0];
+            snellenInputButtons.forEach(button => button.classList.remove('correct', 'incorrect'));
+        }
+
+        function getRandomSnellenLetter() {
+            const randomIndex = Math.floor(Math.random() * snellenLetters.length);
+            return snellenLetters[randomIndex];
+        }
+
+        function processSnellenAnswer(selectedLetter) {
+            const currentCorrectLetter = snellenLetterSpan.textContent;
+            const isCorrect = (selectedLetter === currentCorrectLetter);
+
+            const clickedButton = document.querySelector(`.snellen-input-group button[data-letter="${selectedLetter}"]`);
+            if (clickedButton) {
+                clickedButton.classList.add(isCorrect ? 'correct' : 'incorrect');
+                setTimeout(() => clickedButton.classList.remove('correct', 'incorrect'), 500);
+            }
+
+            if (isCorrect) {
+                if (currentSnellenEye === 'rightEye') {
+                    userResults.snellen.rightEye.push(snellenFontSizes[currentSnellenLetterIndex]);
+                } else {
+                    userResults.snellen.leftEye.push(snellenFontSizes[currentSnellenLetterIndex]);
+                }
+                currentSnellenLetterIndex++;
+                snellenAttempts = 0;
+                if (currentSnellenLetterIndex < snellenFontSizes.length) {
+                    snellenLetterSpan.textContent = getRandomSnellenLetter();
+                    snellenLetterSpan.style.fontSize = snellenFontSizes[currentSnellenLetterIndex];
+                } else {
+                    alert(`Congratulations! You've completed the Snellen test for your ${currentSnellenEye} eye.`);
+                    if (currentSnellenEye === 'rightEye') {
+                         snellenNextEyeButton.style.display = 'inline-block';
+                         snellenFinishButton.style.display = 'none';
+                    } else {
+                         snellenFinishButton.style.display = 'inline-block';
+                         snellenNextEyeButton.style.display = 'none';
+                    }
+                }
+            } else {
+                snellenAttempts++;
+                if (snellenAttempts >= 2) {
+                    alert(`You struggled with this size for your ${currentSnellenEye} eye. Moving to the next test.`);
+                    currentSnellenLetterIndex = snellenFontSizes.length;
+                    if (currentSnellenEye === 'rightEye') {
+                         snellenNextEyeButton.style.display = 'inline-block';
+                         snellenFinishButton.style.display = 'none';
+                    } else {
+                         snellenFinishButton.style.display = 'inline-block';
+                         snellenNextEyeButton.style.display = 'none';
+                    }
+                } else {
+                    alert('Try again!');
+                }
+            }
+        }
+
+        function updateSnellenInstructions(currentEye, otherEye) {
+            const instructionsDiv = document.querySelector('#step-2-snellen .step-instructions');
+            instructionsDiv.innerHTML = `
+                <ul>
+                    <li>Cover your **${currentEye}** eye.</li>
+                    <li>Read the letter aloud or type it below.</li>
+                </ul>
+            `;
+        }
+
+        // --- Astigmatism Test Helper Functions ---
+        function drawAstigmatismChart() {
+            astigmatismChart.innerHTML = '';
+            for (let i = 0; i < 12; i++) {
+                const line = document.createElement('div');
+                line.classList.add('astigmatism-line');
+                line.style.transform = `translate(-50%, -50%) rotate(${i * 30}deg)`;
+                astigmatismChart.appendChild(line);
+            }
+        }
+        function updateAstigmatismInstructions(currentEye, otherEye) {
+            const instructionsDiv = document.querySelector('#step-3-astigmatism .step-instructions');
+            instructionsDiv.innerHTML = `
+                <ul>
+                    <li>Cover your **${currentEye}** eye.</li>
+                    <li>Stare at the central dot.</li>
+                    <li>Answer the question below.</li>
+                </ul>
+            `;
+        }
+
+        // --- Amsler Grid Test Helper Functions ---
+        function updateAmslerInstructions(currentEye, otherEye) {
+            const instructionsDiv = document.querySelector('#step-4-amsler .step-instructions');
+            instructionsDiv.innerHTML = `
+                <ul>
+                    <li>Cover your **${currentEye}** eye.</li>
+                    <li>Stare intently at the central red dot.</li>
+                    <li>Answer the question below.</li>
+                </ul>
+            `;
+        }
+
+        // --- Eye Stress Game Helper Functions ---
+        function resetGame() {
+            clearInterval(gameTimerInterval);
+            gameScore = 0;
+            gameLevel = 1;
+            gameTimer = gameTimePerRound[0];
+            gameScoreDisplay.textContent = gameScore;
+            gameTimerDisplay.textContent = gameTime;
+            gameMessageDisplay.textContent = '';
+            gameGridContainer.innerHTML = ''; // Clear grid
+            gameStartButton.style.display = 'inline-block'; // Show start button
+        }
+
+        function startGame() {
+            gameScore = 0;
+            gameLevel = 1;
+            userResults.eyeStressGameScore = 0; // Reset score in results
+            gameScoreDisplay.textContent = gameScore;
+            gameStartButton.style.display = 'none'; // Hide start button
+            nextGameRound();
+        }
+
+        function nextGameRound() {
+            clearInterval(gameTimerInterval); // Clear previous timer
+            if (gameLevel > gameGridSizes.length) {
+                endGame(true); // All levels completed
+                return;
+            }
+
+            const gridSize = gameGridSizes[gameLevel - 1];
+            const rotationAngle = gameRotationAngles[gameLevel - 1];
+            gameTime = gameTimePerRound[gameLevel - 1];
+            gameTimerDisplay.textContent = gameTime;
+
+            gameGridContainer.style.gridTemplateColumns = `repeat(${gridSize}, 1fr)`;
+            gameGridContainer.style.gridTemplateRows = `repeat(${gridSize}, 1fr)`;
+            gameGridContainer.innerHTML = ''; // Clear existing grid
+
+            const commonLetter = gameLetters[Math.floor(Math.random() * gameLetters.length)];
+            const oddOneOutIndex = Math.floor(Math.random() * (gridSize * gridSize));
+
+            for (let i = 0; i < (gridSize * gridSize); i++) {
+                const cell = document.createElement('div');
+                cell.classList.add('game-cell');
+                cell.textContent = commonLetter;
+                if (i === oddOneOutIndex) {
+                    cell.classList.add('odd-one-out');
+                    cell.dataset.odd = 'true';
+                    cell.style.transform = `rotate(${rotationAngle}deg)`;
+                } else {
+                    cell.dataset.odd = 'false';
+                    // Add slight random rotations to other letters to increase challenge
+                    const randomRotation = (Math.random() * 10 - 5); // -5 to 5 degrees
+                    cell.style.transform = `rotate(${randomRotation}deg)`;
+                }
+                gameGridContainer.appendChild(cell);
+            }
+
+            gameTimerInterval = setInterval(() => {
+                gameTime--;
+                gameTimerDisplay.textContent = gameTime;
+                if (gameTime <= 0) {
+                    endGame(false); // Time's up
+                }
+            }, 1000);
+        }
+
+        function endGame(completedAllLevels) {
+            clearInterval(gameTimerInterval);
+            gameMessageDisplay.textContent = completedAllLevels ? `Game Over! You completed all levels with a score of ${gameScore}!` : `Time's Up! Game Over. Your score: ${gameScore}`;
+            gameMessageDisplay.classList.remove('error', 'success');
+            gameMessageDisplay.classList.add(completedAllLevels ? 'success' : 'error');
+            gameStartButton.style.display = 'inline-block'; // Show start button to play again
+            userResults.eyeStressGameScore = gameScore; // Store final score
+            gameLevel = 1; // Reset level for next play
+        }
+
+
+        // --- Results Summary Generation ---
+        function generateResultsSummary() {
+            summaryList.innerHTML = '';
+
+            let snellenRightResult = 'Not completed';
+            if (userResults.snellen.rightEye.length > 0) {
+                snellenRightResult = `Read up to ${userResults.snellen.rightEye[userResults.snellen.rightEye.length - 1]} font size.`;
+            }
+            let snellenLeftResult = 'Not completed';
+            if (userResults.snellen.leftEye.length > 0) {
+                snellenLeftResult = `Read up to ${userResults.snellen.leftEye[userResults.snellen.leftEye.length - 1]} font size.`;
+            }
+            addSummaryItem('Visual Acuity (Right Eye)', snellenRightResult);
+            addSummaryItem('Visual Acuity (Left Eye)', snellenLeftResult);
+
+            addSummaryItem('Astigmatism (Right Eye)', userResults.astigmatism.rightEye === 'yes' ? 'Saw distortions' : (userResults.astigmatism.rightEye === 'no' ? 'No distortions seen' : 'Not completed'));
+            addSummaryItem('Astigmatism (Left Eye)', userResults.astigmatism.leftEye === 'yes' ? 'Saw distortions' : (userResults.astigmatism.leftEye === 'no' ? 'No distortions seen' : 'Not completed'));
+
+            addSummaryItem('Amsler Grid (Right Eye)', userResults.amsler.rightEye === 'yes' ? 'Saw distortions' : (userResults.amsler.rightEye === 'no' ? 'No distortions seen' : 'Not completed'));
+            addSummaryItem('Amsler Grid (Left Eye)', userResults.amsler.leftEye === 'yes' ? 'Saw distortions' : (userResults.amsler.leftEye === 'no' ? 'No distortions seen' : 'Not completed'));
+
+            addSummaryItem('Color Vision Test', userResults.colorVision || 'Not completed');
+            addSummaryItem('Vision Challenge Game Score', userResults.eyeStressGameScore);
+        }
+
+        function addSummaryItem(label, value) {
+            const listItem = document.createElement('li');
+            listItem.innerHTML = `<strong>${label}:</strong> ${value}`;
+            summaryList.appendChild(listItem);
+        }
+
+        // Initial call to set up the first screen
+        updateNavigationButtons();
+    </script>
+</body>
+</html>
